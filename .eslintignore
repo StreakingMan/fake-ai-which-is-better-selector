@@ -1,0 +1,9 @@
+# generated at 11/23/2022, 1:13:23 AM by streakingman-cli@1.10.1
+
+node_modules
+dist
+
+!.eslintrc.js
+!.prettierrc.js
+!.commitlintrc.js
+!.lintstagedrc.js

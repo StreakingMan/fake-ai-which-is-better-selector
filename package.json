@@ -1,22 +1,39 @@
 {
-  "name": "fake-ai-which-is-better-selector",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
-  },
-  "devDependencies": {
-    "@types/react": "^18.0.24",
-    "@types/react-dom": "^18.0.8",
-    "@vitejs/plugin-react": "^2.2.0",
-    "typescript": "^4.6.4",
-    "vite": "^3.2.3"
-  }
+    "name": "fake-ai-which-is-better-selector",
+    "private": true,
+    "version": "0.0.0",
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc && vite build",
+        "preview": "vite preview",
+        "prepare": "husky install",
+        "release:first": "standard-version -- --first-release",
+        "release": "standard-version"
+    },
+    "dependencies": {
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0"
+    },
+    "devDependencies": {
+        "@commitlint/cli": "^17.3.0",
+        "@commitlint/config-conventional": "^17.3.0",
+        "@types/react": "^18.0.24",
+        "@types/react-dom": "^18.0.8",
+        "@typescript-eslint/eslint-plugin": "^5.44.0",
+        "@typescript-eslint/parser": "^5.44.0",
+        "@vitejs/plugin-react": "^2.2.0",
+        "eslint": "^8.28.0",
+        "eslint-config-prettier": "^8.5.0",
+        "eslint-plugin-prettier": "^4.2.1",
+        "eslint-plugin-react": "^7.31.11",
+        "husky": "^8.0.2",
+        "lint-staged": "^13.0.3",
+        "prettier": "^2.7.1",
+        "standard-version": "^9.5.0",
+        "stylelint": "^14.15.0",
+        "stylelint-config-prettier-scss": "^0.0.1",
+        "stylelint-config-standard-scss": "^6.1.0",
+        "typescript": "^4.6.4",
+        "vite": "^3.2.3"
+    }
 }
