@@ -48,6 +48,7 @@ function App() {
     );
     useEffect(() => {
         const lastTimeString = localStorage.getItem('updateTime');
+        // 初始值存储
         if (!lastTimeString) {
             localStorage.setItem('updateTime', updateTime.toString());
             localStorage.setItem('trainedNum', trainedNum.toString());
@@ -71,7 +72,7 @@ function App() {
         }
     });
 
-    // 昵称
+    // 昵称，可通过url配置
     const [nickname, setNickname] = useState<string>('@streakingman');
     useEffect(() => {
         const urlObj = new URL(location.href);
@@ -83,33 +84,50 @@ function App() {
     const imageInputRef = useRef<HTMLInputElement>(null);
     const [imageList, setImageList] = useState<Image[]>([]);
 
+    // 图片选择
     const onChange: ChangeEventHandler<HTMLInputElement> = async (ev) => {
         const files = ev.target.files;
         if (!files?.length) return;
-        if (files.length < 2) return;
-        setFakeBest('');
-        setTalk(sweetTalk[0]);
-        const list: Image[] = [];
+        const list: Image[] = [...imageList];
+        let hasNew = false;
         for (const file of files) {
-            list.push({
-                md5: await calcFileMD5(file),
-                url: await getFileLocalUrl(file),
-            });
+            // 去重
+            const md5 = await calcFileMD5(file);
+            if (!imageList.find((i) => i.md5 === md5)) {
+                hasNew = true;
+                list.push({
+                    md5,
+                    url: await getFileLocalUrl(file),
+                });
+            }
         }
+        if (!hasNew) return;
+        // 初始化
+        setFakeBest('');
+        setTip(tips[0]);
+        // 更新并排序
         setImageList(list);
         fakeSort(list);
         console.log(list);
     };
 
+    // 清空
+    const onClear = () => {
+        if (sorting) return;
+        setFakeBest('');
+        setTip(tips[0]);
+        setImageList([]);
+    };
+
+    // 按钮拦截
     const onSelect = () => {
         if (sorting) return;
-        if (talk === sweetTalk[sweetTalk.length - 1]) return;
         imageInputRef.current?.click();
     };
 
     // 骚话
-    const sweetTalk = [
-        '选择图片',
+    const tips = [
+        '',
         '正在上传到云端...',
         '图像识别中...',
         '特征分析中...',
@@ -119,30 +137,35 @@ function App() {
         '就是这个！',
     ];
     const [sorting, setSorting] = useState<boolean>(false);
-    const [talk, setTalk] = useState<string>(sweetTalk[0]);
+    const [tip, setTip] = useState<string>(tips[0]);
     const [fakeBest, setFakeBest] = useState<string>('');
 
+    // 模拟排序
     const fakeSort = (_imageList: Image[]) => {
+        if (_imageList.length < 2) {
+            setTip('至少两张图片～');
+            return;
+        }
         setSorting(true);
-        setTalk(sweetTalk[1]);
+        // 开始说骚话
+        setTip(tips[1]);
         let index = 1;
         const timer = () => {
             setTimeout(() => {
                 index++;
-                setTalk(sweetTalk[index]);
-                if (index === sweetTalk.length - 1) {
+                setTip(tips[index]);
+                // 递归终止条件：骚话说完了
+                if (index === tips.length - 1) {
                     const _fakeBest = _imageList
                         .slice()
                         .sort((a, b) => (a.md5 > b.md5 ? -1 : 1))[0].md5;
+                    // 将md5排序第一的图滚到可视区域
                     setFakeBest(_fakeBest);
                     document.getElementById(_fakeBest)?.scrollIntoView({
                         behavior: 'smooth',
                         inline: 'center',
                     });
                     setSorting(false);
-                    setTimeout(() => {
-                        setTalk(sweetTalk[0]);
-                    }, 2000);
                     return;
                 } else {
                     timer();
@@ -172,15 +195,21 @@ function App() {
                 {new Date(updateTime).toLocaleString()}）
             </h2>
             <h2>AI 做出的选择能很大程度上代表 【{nickname}】的喜好</h2>
-            <div className="button" onClick={onSelect}>
-                {talk}
-                <input
-                    ref={imageInputRef}
-                    multiple
-                    type="file"
-                    accept="image/*"
-                    onChange={onChange}
-                />
+            <div className="opt">
+                <div className="button" onClick={onSelect}>
+                    选择图片
+                    <input
+                        ref={imageInputRef}
+                        multiple
+                        type="file"
+                        accept="image/*"
+                        onChange={onChange}
+                    />
+                </div>
+                <div className="button" onClick={onClear}>
+                    清空
+                </div>
+                <div className="tip">{tip}</div>
             </div>
             <div className="image__scroll-container">
                 {imageList.map((img) => (

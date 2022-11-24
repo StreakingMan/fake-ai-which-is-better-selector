@@ -81,6 +81,21 @@ h2 {
     }
 }
 
+.opt {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.tip {
+    font-size: 28px;
+    line-height: 1;
+    min-height: 28px;
+    width: 100%;
+    text-align: center;
+}
+
 .button {
     padding: 9px 16px;
     border-radius: 8px;
